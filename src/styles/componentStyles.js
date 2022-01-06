@@ -122,3 +122,70 @@ export const textInputs = StyleSheet.create({
     top: 15,
   },
 });
+export const dualGroupBar = StyleSheet.create({
+  navBar: {
+    backgroundColor: '#FFFFFF',
+    borderBottomColor: '#FFFFFF',
+  },
+  profile: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+  },
+});
+export const tweetStyles = StyleSheet.create({
+  view: {
+    flexDirection: 'row',
+    marginHorizontal: 10,
+    marginTop: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#D6DADB',
+  },
+  profile: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    marginHorizontal: 5,
+  },
+  name: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: '700',
+    fontFamily: 'Helvetica',
+    marginRight: 3,
+  },
+  username: {
+    fontSize: 16,
+    fontFamily: 'Helvetica',
+    marginHorizontal: 3,
+  },
+  time: {
+    fontSize: 16,
+    fontFamily: 'Helvetica',
+  },
+  dots: {
+    position: 'absolute',
+    right: 5,
+    flex: 1,
+  },
+  text: {
+    fontSize: 15,
+    fontFamily: 'Helvetica',
+    color: '#000000',
+  },
+  tweetTool: {
+    flexDirection: 'row',
+    marginVertical: 15,
+    marginRight: 10,
+    justifyContent: 'space-between',
+  },
+  tool: {
+    flexDirection: 'row',
+  },
+  toolText: {
+    fontSize: 15,
+  },
+  toolIcon: {
+    marginRight: 10,
+  },
+});

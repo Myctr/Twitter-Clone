@@ -69,7 +69,13 @@ const Login = ({route, navigation}) => {
           styles.bottom,
           {justifyContent: barVisible ? 'flex-start' : 'flex-end'},
         ]}>
-        <SimpleButton value={password} text={'Log in'} />
+        <SimpleButton
+          value={password}
+          text={'Log in'}
+          onPress={() => {
+            navigation.navigate('App');
+          }}
+        />
         <View>
           <Text style={styles.forgotText}>Forgot Password?</Text>
         </View>

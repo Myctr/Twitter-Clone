@@ -6,6 +6,7 @@ import PreRegister from '../scenes/Auth/PreRegister';
 import Register from '../scenes/Auth/Register';
 import Forgot from '../scenes/Auth/Forgot';
 import Welcome from '../scenes/Auth/Welcome';
+import App from '../navigation/AppBottomTabs';
 
 const Stack = createStackNavigator();
 const AuthenticateStack = () => {
@@ -19,9 +20,10 @@ const AuthenticateStack = () => {
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="PreLogin" component={PreLogin} />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Forgot" component={Forgot} />
       <Stack.Screen name="PreRegister" component={PreRegister} />
       <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="Forgot" component={Forgot} />
+      <Stack.Screen name="App" component={App} />
     </Stack.Navigator>
   );
 };

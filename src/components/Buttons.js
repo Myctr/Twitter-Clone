@@ -4,6 +4,7 @@ import {
   logoButton,
   createAccountButton,
   simpleButton,
+  littleButton,
 } from '../styles/componentStyles';
 
 export const LogoButton = props => {
@@ -31,6 +32,18 @@ export const SimpleButton = props => {
         disabled={!props.value}
         onPress={props.onPress}>
         <Text style={simpleButton.text}>{props.text}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+export const LittleButton = props => {
+  return (
+    <View style={[littleButton.view, {opacity: props.value ? 1 : 0.5}]}>
+      <TouchableOpacity
+        style={littleButton.touchableOpacity}
+        disabled={!props.value}
+        onPress={props.onPress}>
+        <Text style={littleButton.text}>{props.text}</Text>
       </TouchableOpacity>
     </View>
   );
