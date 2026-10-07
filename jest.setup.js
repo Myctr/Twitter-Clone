@@ -20,23 +20,12 @@ jest.mock('react-native-gesture-handler', () => {
   };
 });
 
-jest.mock('react-native-nav', () => {
-  const React = require('react');
-  const {View} = require('react-native');
-  const NavBar = ({children}) => React.createElement(View, null, children);
-  const NavGroup = ({children}) => React.createElement(View, null, children);
-  return {__esModule: true, default: NavBar, NavGroup};
-});
-
-jest.mock('react-native-navigation-bar-color', () => {
-  const changeNavigationBarColor = jest.fn();
-  return {
-    __esModule: true,
-    default: changeNavigationBarColor,
-    hideNavigationBar: jest.fn(),
-    showNavigationBar: jest.fn(),
-  };
-});
+jest.mock('react-native-vector-icons/Ionicons', () => 'Ionicons');
+jest.mock('react-native-vector-icons/FontAwesome6', () => 'FontAwesome6');
+jest.mock(
+  'react-native-vector-icons/MaterialCommunityIcons',
+  () => 'MaterialCommunityIcons',
+);
 
 if (typeof window !== 'undefined' && !window.dispatchEvent) {
   window.dispatchEvent = jest.fn();
