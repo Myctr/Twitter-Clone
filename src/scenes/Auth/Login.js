@@ -1,87 +1,98 @@
 import React, {useState} from 'react';
-import {View, Text, SafeAreaView, TouchableOpacity} from 'react-native';
-import {CancelBar} from '../../components/Navbar';
-import Logo from '../../components/Logo';
-import {Header} from '../../components/Header';
-import {LoginTextInput, PasswordTextInput} from '../../components/TextInputs';
-import {SimpleButton} from '../../components/Buttons';
-import styles from '../../styles/loginStyles';
-import changeNavigationBarColor, {
-  hideNavigationBar,
-  showNavigationBar,
-} from 'react-native-navigation-bar-color';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import PillButton from '../../components/PillButton';
+import ScreenHeader from '../../components/ScreenHeader';
+import TextField from '../../components/TextField';
+import XLogo from '../../components/XLogo';
+import {useTheme} from '../../theme';
 
 const Login = ({route, navigation}) => {
-  const [barVisible, setBarVisible] = useState(false);
-  const [password, setPassword] = useState();
-  const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const {colors, spacing, typography} = useTheme();
+  const [password, setPassword] = useState('');
+  const [revealed, setRevealed] = useState(false);
+  const username = route?.params?.username ?? '';
+  const canContinue = password.length > 0;
 
-  if (barVisible) {
-    showNavigationBar();
-    changeNavigationBarColor('transparent', false);
-  } else {
-    hideNavigationBar();
-    changeNavigationBarColor('transparent', true);
-  }
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <CancelBar
-        onPress={() => {
-          navigation.navigate('Welcome');
-        }}
-      />
-      <Logo />
-      <Header title={'Enter your password'} />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={[styles.container, {backgroundColor: colors.background}]}>
+      <SafeAreaView style={styles.container}>
+        <ScreenHeader onBack={() => navigation.goBack()} showBorder={false} />
 
-      <LoginTextInput value={route.params.username} />
-
-      <PasswordTextInput
-        placeholder={'Password'}
-        visibility={passwordVisibility}
-        value={password}
-        setValue={setPassword}
-        onFocus={() => {
-          setBarVisible(true);
-        }}
-        onEndEditing={() => {
-          setBarVisible(false);
-        }}
-      />
-
-      <View
-        style={[
-          styles.passwordVisible,
-          {
-            opacity: password ? 1 : 0,
-          },
-        ]}>
-        <TouchableOpacity
-          onPress={() => {
-            setPasswordVisibility(!passwordVisibility);
-          }}>
-          <Text style={styles.passwordVisibleText}>
-            {passwordVisibility ? 'Reveal password' : 'Hide password'}
+        <View style={[styles.body, {padding: spacing.xl}]}>
+          <XLogo size={26} />
+          <Text
+            style={[
+              typography.title,
+              {color: colors.text, marginTop: spacing.xl},
+            ]}>
+            Şifreni gir
           </Text>
-        </TouchableOpacity>
-      </View>
-      <View
-        style={[
-          styles.bottom,
-          {justifyContent: barVisible ? 'flex-start' : 'flex-end'},
-        ]}>
-        <SimpleButton
-          value={password}
-          text={'Log in'}
-          onPress={() => {
-            navigation.navigate('App');
-          }}
-        />
-        <View>
-          <Text style={styles.forgotText}>Forgot Password?</Text>
+
+          <View style={{marginTop: spacing.xl}}>
+            <TextField editable={false} label="Hesap" value={username} />
+            <View style={{height: spacing.md}} />
+            <TextField
+              label="Şifre"
+              onChangeText={setPassword}
+              onSubmitEditing={() => canContinue && navigation.navigate('App')}
+              secureTextEntry={!revealed}
+              trailing={
+                <Ionicons
+                  color={colors.textMuted}
+                  name={revealed ? 'eye-off-outline' : 'eye-outline'}
+                  onPress={() => setRevealed(current => !current)}
+                  size={20}
+                />
+              }
+              value={password}
+            />
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+
+        <View style={[styles.footer, {padding: spacing.xl}]}>
+          <PillButton
+            disabled={!canContinue}
+            label="Giriş yap"
+            onPress={() => navigation.navigate('App')}
+          />
+          <Text
+            onPress={() => navigation.navigate('Forgot')}
+            style={[
+              typography.body,
+              styles.link,
+              {color: colors.text, marginTop: spacing.lg},
+            ]}>
+            Şifreni mi unuttun?
+          </Text>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  body: {
+    flex: 1,
+  },
+  footer: {
+    alignItems: 'center',
+  },
+  link: {
+    textAlign: 'center',
+  },
+});
 
 export default Login;
