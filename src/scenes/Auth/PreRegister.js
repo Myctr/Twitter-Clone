@@ -1,123 +1,128 @@
 import React, {useState} from 'react';
-import {SafeAreaView, View} from 'react-native';
-import {CancelBar} from '../../components/Navbar';
-import Logo from '../../components/Logo';
-import {Header} from '../../components/Header';
-import {StartTextInput} from '../../components/TextInputs';
-import {SimpleButton} from '../../components/Buttons';
-import styles from '../../styles/preRegisterStyles';
-import changeNavigationBarColor, {
-  hideNavigationBar,
-  showNavigationBar,
-} from 'react-native-navigation-bar-color';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import DatePicker from 'react-native-date-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import PillButton from '../../components/PillButton';
+import ScreenHeader from '../../components/ScreenHeader';
+import TextField from '../../components/TextField';
+import {useTheme} from '../../theme';
 
-const Register = props => {
-  const [barVisible, setBarVisible] = useState(false);
+const formatDate = date =>
+  date.toLocaleDateString('tr-TR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+
+const PreRegister = ({navigation}) => {
+  const {colors, spacing, typography} = useTheme();
   const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [dateModal, setDateModal] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [birthDate, setBirthDate] = useState(new Date(2000, 0, 1));
+  const [pickerVisible, setPickerVisible] = useState(false);
+  const canContinue = name.trim().length > 1 && phone.trim().length >= 10;
 
-  if (barVisible) {
-    showNavigationBar();
-    changeNavigationBarColor('transparent', false);
-  } else {
-    hideNavigationBar();
-    changeNavigationBarColor('transparent', true);
-  }
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <CancelBar
-        onPress={() => {
-          props.navigation.navigate('Welcome');
-        }}
-      />
-      <Logo />
-      <Header title={'Create your account'} />
-      <StartTextInput
-        placeholder={'Name'}
-        color="#000000"
-        iconName={name.length > 3 ? 'check-circle' : 'exclamation-circle'}
-        iconSize={25}
-        iconColor={name.length > 3 ? '#6BE4BC' : '#E95063'}
-        regular={true}
-        onFocus={() => {
-          setBarVisible(true);
-        }}
-        onEndEditing={() => {
-          setBarVisible(false);
-        }}
-        setValue={setName}
-        value={name}
-        keyboardType={'twitter'}
-      />
-      <StartTextInput
-        placeholder={'Phone number'}
-        color="#000000"
-        iconName={
-          phoneNumber.length > 10 ? 'check-circle' : 'exclamation-circle'
-        }
-        iconSize={25}
-        iconColor={phoneNumber.length > 10 ? '#6BE4BC' : '#E95063'}
-        regular={true}
-        onFocus={() => {
-          setBarVisible(true);
-        }}
-        onEndEditing={() => {
-          setBarVisible(false);
-        }}
-        setValue={setPhoneNumber}
-        value={phoneNumber}
-        keyboardType={'numeric'}
-      />
-      <StartTextInput
-        placeholder={'Date of birth'}
-        color="#000000"
-        onFocus={() => {
-          setDateModal(true);
-        }}
-        iconName={
-          date.getFullYear() < 2004 ? 'check-circle' : 'exclamation-circle'
-        }
-        iconSize={25}
-        iconColor={date.getFullYear() < 2004 ? '#6BE4BC' : '#E95063'}
-        regular={true}
-        value={date.toDateString()}
-      />
-      <DatePicker
-        modal
-        mode="date"
-        open={dateModal}
-        date={date}
-        onConfirm={date => {
-          setDateModal(false);
-          setDate(date);
-        }}
-        onCancel={() => {
-          setDateModal(false);
-        }}
-      />
-      <View
-        style={[
-          styles.bottom,
-          {justifyContent: barVisible ? 'flex-start' : 'flex-end'},
-        ]}>
-        {/* TODO: Yup ile verileri kontrol et */}
-        <SimpleButton
-          text="Next"
-          value={name && phoneNumber && date}
-          onPress={() => {
-            props.navigation.navigate('Register', {
-              name: name,
-              phoneNumber: phoneNumber,
-              date: date.toDateString(),
-            });
-          }}
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colors.background}]}>
+      <ScreenHeader onBack={() => navigation.goBack()} title="Hesap oluştur" />
+
+      <ScrollView
+        contentContainerStyle={{padding: spacing.xl}}
+        showsVerticalScrollIndicator={false}>
+        <Text style={[typography.title, {color: colors.text}]}>
+          Seni tanıyalım
+        </Text>
+        <Text
+          style={[
+            typography.body,
+            {color: colors.textMuted, marginTop: spacing.sm},
+          ]}>
+          Bilgilerini girerek hesabını oluştur.
+        </Text>
+
+        <View style={{marginTop: spacing.xl}}>
+          <TextField
+            autoCapitalize="words"
+            label="Ad"
+            onChangeText={setName}
+            value={name}
+          />
+          <View style={{height: spacing.md}} />
+          <TextField
+            keyboardType="phone-pad"
+            label="Telefon numarası"
+            onChangeText={setPhone}
+            value={phone}
+          />
+          <View style={{height: spacing.md}} />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => setPickerVisible(true)}>
+            <View pointerEvents="none">
+              <TextField
+                editable={false}
+                label="Doğum tarihi"
+                trailing={
+                  <Ionicons
+                    color={colors.textMuted}
+                    name="calendar-outline"
+                    size={20}
+                  />
+                }
+                value={formatDate(birthDate)}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      <View style={[styles.footer, {padding: spacing.xl}]}>
+        <PillButton
+          disabled={!canContinue}
+          label="İleri"
+          onPress={() =>
+            navigation.navigate('Register', {
+              birthDate: formatDate(birthDate),
+              name: name.trim(),
+              phone: phone.trim(),
+            })
+          }
         />
       </View>
+
+      <DatePicker
+        date={birthDate}
+        maximumDate={new Date()}
+        mode="date"
+        modal
+        onCancel={() => setPickerVisible(false)}
+        onConfirm={date => {
+          setPickerVisible(false);
+          setBirthDate(date);
+        }}
+        open={pickerVisible}
+        theme={colors.background === '#000000' ? 'dark' : 'light'}
+        title="Doğum tarihini seç"
+      />
     </SafeAreaView>
   );
 };
 
-export default Register;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  footer: {
+    alignItems: 'center',
+  },
+});
+
+export default PreRegister;
