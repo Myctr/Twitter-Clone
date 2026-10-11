@@ -1,15 +1,44 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {View, Text} from 'react-native';
+import {StatusBar} from 'react-native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from '@react-navigation/native';
 import Navigation from './src/navigation/Navigation';
-import {NavigationContainer} from '@react-navigation/native';
+import {ThemeProvider, useTheme} from './src/theme';
 
-const App = () => {
+const AppContent = () => {
+  const {colors, mode} = useTheme();
+  const base = mode === 'dark' ? DarkTheme : DefaultTheme;
+  const navigationTheme = {
+    ...base,
+    colors: {
+      ...base.colors,
+      background: colors.background,
+      border: colors.border,
+      card: colors.background,
+      primary: colors.accent,
+      text: colors.text,
+    },
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
+      <StatusBar
+        backgroundColor={colors.background}
+        barStyle={mode === 'dark' ? 'light-content' : 'dark-content'}
+      />
       <Navigation />
     </NavigationContainer>
   );
 };
+
+const App = () => (
+  <ThemeProvider>
+    <AppContent />
+  </ThemeProvider>
+);
 
 export default App;

@@ -1,95 +1,98 @@
 import React from 'react';
+import {StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Explore from '../scenes/App/Explore';
+import Grok from '../scenes/App/Grok';
 import Home from '../scenes/App/Home';
-import Search from '../scenes/App/Search';
-import Spaces from '../scenes/App/Spaces';
-import Notifications from '../scenes/App/Notifications';
 import Messages from '../scenes/App/Messages';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Notifications from '../scenes/App/Notifications';
+import {DrawerProvider} from '../components/SideDrawer';
+import {currentUser} from '../data';
+import {useTheme} from '../theme';
 
 const Tab = createBottomTabNavigator();
 
+const TABS = [
+  {component: Home, icon: 'home', outline: 'home-outline', title: 'Home'},
+  {
+    component: Explore,
+    icon: 'search',
+    outline: 'search-outline',
+    title: 'Explore',
+  },
+  {
+    component: Grok,
+    icon: 'sparkles',
+    outline: 'sparkles-outline',
+    title: 'Grok',
+  },
+  {
+    badge: 19,
+    component: Notifications,
+    icon: 'notifications',
+    outline: 'notifications-outline',
+    title: 'Notifications',
+  },
+  {
+    badge: 1,
+    component: Messages,
+    icon: 'mail',
+    outline: 'mail-outline',
+    title: 'Messages',
+  },
+];
+
+const createTabBarIcon = ({active, inactive}) =>
+  function TabBarIcon({color, focused, size}) {
+    return (
+      <Ionicons
+        color={color}
+        name={focused ? active : inactive}
+        size={size ?? 24}
+      />
+    );
+  };
+
 const AppBottomTabs = () => {
+  const {colors} = useTheme();
+
   return (
-    <Tab.Navigator
-      initialRouteName={'Home'}
-      screenOptions={{
-        headerShown: false,
-        tabBarLabel: () => {
-          return null;
-        },
-      }}>
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <Icon
-              name="home"
-              size={25}
-              color={focused ? 'black' : 'gray'}
-              solid={focused ? true : false}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Search"
-        component={Search}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <Icon
-              name="search"
-              size={25}
-              color={focused ? 'black' : 'gray'}
-              solid={focused ? true : false}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Spaces"
-        component={Spaces}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <Icon
-              name="star"
-              size={25}
-              color={focused ? 'black' : 'gray'}
-              solid={focused ? true : false}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Notifications"
-        component={Notifications}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <Icon
-              name="bell"
-              size={25}
-              color={focused ? 'black' : 'gray'}
-              solid={focused ? true : false}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Messages"
-        component={Messages}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <Icon
-              name="envelope"
-              size={25}
-              color={focused ? 'black' : 'gray'}
-              solid={focused ? true : false}
-            />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+    <DrawerProvider user={currentUser}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: colors.text,
+          tabBarInactiveTintColor: colors.textMuted,
+          tabBarShowLabel: false,
+          tabBarStyle: {
+            backgroundColor: colors.background,
+            borderTopColor: colors.border,
+            borderTopWidth: StyleSheet.hairlineWidth,
+          },
+        }}>
+        {TABS.map(tab => (
+          <Tab.Screen
+            component={tab.component}
+            key={tab.title}
+            name={tab.title}
+            options={{
+              tabBarBadge: tab.badge,
+              tabBarBadgeStyle: {
+                backgroundColor: colors.accent,
+                color: '#FFFFFF',
+                fontSize: 10,
+                fontWeight: '700',
+              },
+              tabBarIcon: createTabBarIcon({
+                active: tab.icon,
+                inactive: tab.outline,
+              }),
+            }}
+          />
+        ))}
+      </Tab.Navigator>
+    </DrawerProvider>
   );
 };
 
