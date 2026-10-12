@@ -1,68 +1,114 @@
 import React from 'react';
-import {View, Text, SafeAreaView, TouchableOpacity} from 'react-native';
-import Logo from '../../components/Logo';
-import {WelcomeHeader} from '../../components/Header';
-import {LogoButton, CreateAccountButton} from '../../components/Buttons';
-import styles from '../../styles/welcomeStyles';
-import apple_logo from '../../assets/icons/apple_logo.png';
-import google_logo from '../../assets/icons/google_logo.png';
-import changeNavigationBarColor, {
-  hideNavigationBar,
-} from 'react-native-navigation-bar-color';
-const Welcome = props => {
-  hideNavigationBar();
-  changeNavigationBarColor('transparent', true);
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import PillButton from '../../components/PillButton';
+import XLogo from '../../components/XLogo';
+import {useTheme} from '../../theme';
+
+const Welcome = ({navigation}) => {
+  const {colors, spacing, typography} = useTheme();
+
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <Logo />
-      <WelcomeHeader title={"See what's happening in the world right now."} />
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colors.background}]}>
+      <ScrollView
+        contentContainerStyle={[styles.content, {padding: spacing.xl}]}
+        showsVerticalScrollIndicator={false}>
+        <XLogo size={30} />
 
-      <View style={styles.view}>
-        <LogoButton imageSource={google_logo} text={'Continue with Google'} />
-        <LogoButton imageSource={apple_logo} text={'Continue with Apple'} />
+        <Text
+          style={[
+            typography.display,
+            styles.headline,
+            {color: colors.text, marginTop: spacing.xxl},
+          ]}>
+          Şu anda dünyada neler oluyor?
+        </Text>
 
-        <Text>or</Text>
+        <View style={{marginTop: spacing.xxl}}>
+          <PillButton
+            icon={
+              <FontAwesome6 brand color="#FFFFFF" name="google" size={16} />
+            }
+            label="Google ile devam et"
+            onPress={() => {}}
+          />
+          <View style={{height: spacing.md}} />
+          <PillButton
+            icon={<FontAwesome6 brand color="#FFFFFF" name="apple" size={18} />}
+            label="Apple ile devam et"
+            onPress={() => {}}
+          />
+        </View>
 
-        <CreateAccountButton
-          text={'Create Account'}
-          onPress={() => {
-            props.navigation.navigate('PreRegister');
-          }}
+        <View style={[styles.dividerRow, {marginVertical: spacing.lg}]}>
+          <View style={[styles.line, {backgroundColor: colors.border}]} />
+          <Text style={[typography.caption, {color: colors.textMuted}]}>
+            veya
+          </Text>
+          <View style={[styles.line, {backgroundColor: colors.border}]} />
+        </View>
+
+        <PillButton
+          label="Hesap oluştur"
+          onPress={() => navigation.navigate('PreRegister')}
+          variant="outline"
         />
 
-        <View style={styles.privacyView}>
-          <Text>By signing up, you are to our </Text>
-        </View>
-        <View style={styles.privacyView}>
-          <TouchableOpacity>
-            <Text style={styles.touchableOpacityText}>Terms</Text>
-          </TouchableOpacity>
-          <Text>{', '}</Text>
-          <TouchableOpacity>
-            <Text style={styles.touchableOpacityText}>Privacy Policy</Text>
-          </TouchableOpacity>
-          <Text>,</Text>
-          <Text> and </Text>
-          <TouchableOpacity>
-            <Text style={styles.touchableOpacityText}>Cookie Use</Text>
-          </TouchableOpacity>
-          <Text>.</Text>
-        </View>
+        <Text
+          style={[
+            typography.caption,
+            styles.legal,
+            {color: colors.textMuted, marginTop: spacing.xl},
+          ]}>
+          Kaydolarak <Text style={{color: colors.accent}}>Şartlar</Text>,{' '}
+          <Text style={{color: colors.accent}}>Gizlilik Politikası</Text> ve{' '}
+          <Text style={{color: colors.accent}}>Çerez Kullanımı</Text>{' '}
+          koşullarını kabul etmiş olursun.
+        </Text>
+      </ScrollView>
 
-        <View style={styles.privacyView}>
-          <Text style={{fontSize: 16}}>Have an account already? </Text>
-          <TouchableOpacity
-            onPress={() => {
-              props.navigation.navigate('PreLogin');
-            }}>
-            <Text style={[styles.touchableOpacityText, {fontSize: 16}]}>
-              Log in
-            </Text>
-          </TouchableOpacity>
-        </View>
+      <View style={[styles.footer, {borderTopColor: colors.border}]}>
+        <Text style={[typography.body, {color: colors.textMuted}]}>
+          Hesabın var mı?{' '}
+          <Text
+            onPress={() => navigation.navigate('PreLogin')}
+            style={{color: colors.accent}}>
+            Giriş yap
+          </Text>
+        </Text>
       </View>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    paddingBottom: 48,
+  },
+  headline: {
+    lineHeight: 36,
+  },
+  dividerRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  line: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+  },
+  legal: {
+    lineHeight: 18,
+  },
+  footer: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 18,
+    alignItems: 'center',
+  },
+});
 
 export default Welcome;

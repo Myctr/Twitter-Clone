@@ -1,15 +1,16 @@
 import React from 'react';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {Image} from 'react-native';
 import {useTheme} from '../theme';
+
+const logo = require('../assets/images/x_logo.png');
 
 const XLogo = ({size = 28, color}) => {
   const {colors} = useTheme();
   return (
-    <FontAwesome6
-      name="x-twitter"
-      size={size}
-      color={color ?? colors.text}
-      brand
+    <Image
+      resizeMode="contain"
+      source={logo}
+      style={{height: size, tintColor: color ?? colors.text, width: size}}
     />
   );
 };
